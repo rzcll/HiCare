@@ -829,27 +829,6 @@
             loginBtn.classList.add('opacity-80');
             loginError.classList.add('hidden');
 
-            // --- MOCK LOGIN SUCCESS (Hanya untuk preview UI jika API tidak aktif) ---
-            // Jika Anda ingin mengaktifkan fetch API Google Script murni, hapus blok IF di bawah ini.
-            if(API_URL.includes("AKfycbz1kzC7aflCpLWzRuyTw_1jFPYiUr9Dp_VF7YWdLehAhzNYadbrRDJdsfC1GKecXzjZ")) {
-                setTimeout(() => {
-                    currentLoggedUser = user;
-                    displayUsername.textContent = user;
-                    messageTemplate.value = "Halo {{Panggilan}} {{Name}},\n\nJangan lupa jadwal kontrol kesehatan Anda.\nAlamat terdaftar: {{Alamat}}";
-                    uiLicenseCode.textContent = "HC-" + Math.random().toString(36).substring(2, 10).toUpperCase();
-                    
-                    // Set waktu dummy 6 bulan
-                    const dummyDate = new Date();
-                    dummyDate.setMonth(dummyDate.getMonth() + 6);
-                    startCountdown(dummyDate.toISOString());
-
-                    resetLoginBtn(originalBtnText);
-                    navigate('dashboard');
-                }, 1000);
-                return;
-            }
-            // ------------------------------------------------------------------------
-
             fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
