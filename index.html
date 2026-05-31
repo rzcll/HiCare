@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiCare - Layanan Ekosistem Kesehatan Digital Premium</title>
+    <title>HiCare - Smart Reminder</title>
     
+    <!-- Favicon -->
+    <link rel="icon" href="https://github.com/rzcll/WebsiteHiCare/blob/main/LOGO%20HiCare.png?raw=true" type="image/png">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Excel & Icons Library -->
+    <!-- Pustaka Tambahan untuk Aplikasi -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons (FontAwesome untuk Landing Page) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <script>
         tailwind.config = {
@@ -40,27 +48,21 @@
         }
     </script>
     <style>
-        /* ================= GAYA GLOBAL ================= */
+        /* ==========================================
+           GAYA UNTUK LANDING PAGE
+           ========================================== */
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
             background-color: #F4F6F8;
             color: #1E293B;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar, ::-webkit-scrollbar { width: 8px; height: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track, ::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover, ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
-
-        /* ================= GAYA LANDING PAGE ================= */
         .glass-panel {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 20px 40px -10px rgba(15, 58, 55, 0.15);
+            box-shadow: 0 20px 40px -10px rgba(15, 58, 55, 0.15); 
             border-radius: 24px;
         }
 
@@ -69,21 +71,32 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.35); 
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .glass-card:hover {
             transform: translateY(-8px);
             background: rgba(255, 255, 255, 0.8);
-            border-color: rgba(249, 115, 22, 0.4);
-            box-shadow: 0 25px 50px -12px rgba(249, 115, 22, 0.25);
+            border-color: rgba(249, 115, 22, 0.4); 
+            box-shadow: 0 25px 50px -12px rgba(249, 115, 22, 0.25); 
         }
 
-        .input-field { transition: all 0.3s ease; }
-        .input-field:focus { box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15); }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
-        /* ================= GAYA DASHBOARD & LOGIN ================= */
+        .input-field {
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+        }
+
+        /* ==========================================
+           GAYA UNTUK APLIKASI DASHBOARD
+           ========================================== */
         .dark-shadow-card {
             background: #ffffff;
             border: 1px solid #e5e7eb;
@@ -121,7 +134,7 @@
             box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.08), inset -4px -4px 8px rgba(255, 255, 255, 1);
             border: 1px solid #e5e7eb;
         }
-        
+
         .input-ring:focus-within {
             box-shadow: 0 0 0 3px rgba(75, 85, 99, 0.2);
             border-color: #4b5563;
@@ -139,21 +152,40 @@
         .animate-slide-up {
             animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        /* Animasi Marquee (Berjalan Kanan ke Kiri) */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 50s linear infinite;
+        }
+        /* Menghentikan laju saat kursor diarahkan ke logo */
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+        /* Membuat efek pudar di pinggir layar agar muncul/hilang lebih estetik */
+        .marquee-container {
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
     </style>
 </head>
-<body class="relative overflow-x-hidden min-h-screen flex flex-col selection:bg-gray-300 selection:text-gray-900">
+<body class="relative overflow-x-hidden min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
 
-    <!-- ========================================== -->
-    <!-- VIEW 1: LANDING PAGE -->
-    <!-- ========================================== -->
-    <div id="view-landing" class="block w-full flex-grow flex flex-col transition-opacity duration-500">
-        
+    <!-- =========================================================================
+         WADAH LANDING PAGE 
+         ========================================================================= -->
+    <div id="landingPageContainer" class="flex flex-col flex-grow w-full transition-all duration-500">
         <!-- Navbar Premium -->
         <nav class="fixed top-0 inset-x-0 z-50 transition-all duration-300 backdrop-blur-md bg-white/70 border-b border-white/40 shadow-sm">
             <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <div class="w-11 h-11 flex items-center justify-center overflow-hidden bg-white shadow-md shadow-brand-500/20 border border-slate-100 rounded-xl">
-                        <img src="https://github.com/rzcll/HiCare/blob/main/Logo.png?raw=true" alt="Logo Website" class="w-full h-full object-contain p-1">
+                <div class="flex items-center gap-3">
+                    <div class="w-20 h-20 flex items-center justify-center hover:scale-125 transition-transform duration-300 cursor-default">
+                        <img src="https://github.com/rzcll/WebsiteHiCare/blob/main/LOGO%20HiCare.png?raw=true" class="w-full h-full object-contain drop-shadow-md" alt="Logo">
                     </div>
                     <div>
                         <h1 class="text-xl font-extrabold text-slate-800 tracking-tight leading-none">HiCare</h1>
@@ -163,8 +195,8 @@
                 
                 <!-- Menu Action Buttons -->
                 <div class="flex items-center gap-3">
-                    <button onclick="navigate('login')" class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200 bg-white/80 text-slate-700 font-bold text-sm hover:bg-white hover:text-brand-600 hover:border-brand-400 transition shadow-sm">
-                        <i class="fa-solid fa-arrow-right-to-bracket text-brand-500"></i> Login
+                    <button onclick="showAppLogin()" class="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200 bg-white/80 text-slate-700 font-bold text-sm hover:bg-green-500 hover:text-white hover:border-green-500 transition-all duration-300 shadow-sm">
+                        <i class="fa-solid fa-arrow-right-to-bracket text-brand-500 group-hover:text-white transition-colors duration-300"></i> Login
                     </button>
                     <a href="#paket" class="hidden sm:flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white rounded-full font-bold text-sm hover:bg-accent-500 transition shadow-lg shadow-slate-900/20">
                         Lihat Paket
@@ -173,7 +205,7 @@
             </div>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Main Content Landing Page -->
         <main class="flex-grow relative z-10 pt-20">
             <!-- Hero Section -->
             <section class="relative pt-20 pb-40 bg-gradient-to-br from-brand-700 via-brand-600 to-slate-900 overflow-hidden">
@@ -213,36 +245,40 @@
                     <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                         <div class="flex-1 w-full">
                             <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-3">
-                                <div class="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-accent-500 to-amber-500 text-white text-[10px] font-black rounded-full shadow-lg shadow-accent-500/30 uppercase tracking-widest">
+                                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-accent-500 to-amber-500 text-white text-xs sm:text-sm font-black rounded-full shadow-[0_0_25px_rgba(249,115,22,0.8)] uppercase tracking-widest animate-[pulse_2s_ease-in-out_infinite]">
                                     <i class="fa-solid fa-crown"></i> Add-on Eksklusif
                                 </div>
                                 <h3 class="text-2xl md:text-3xl font-extrabold tracking-tight drop-shadow-md">PAKET HiCare PRO</h3>
                             </div>
                             <div class="flex items-baseline gap-2 mb-6 flex-wrap">
-                                <span class="text-sm text-slate-300 font-medium">Hanya dengan menambah</span>
-                                <span class="text-3xl font-Orange text-transparent bg-clip-text bg-gradient-to-r from-accent-600 to-amber-500 drop-shadow-sm">Rp 20.000</span>
-                                <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">/ perbulan</span>
+                                <span class="text-sm text-slate-300 font-medium mr-2">Hanya dengan menambah</span>
+                                <span class="text-4xl font-black text-accent-500 drop-shadow-[0_0_10px_rgba(249,115,22,0.5)] hover:scale-125 hover:-rotate-6 transition-transform duration-300 inline-block cursor-pointer">Rp 20.000</span>
+                                <span class="text-xs font-medium text-slate-400 uppercase tracking-wider ml-2">/ perbulan</span>
                             </div>
                             <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                                 <li class="flex items-center gap-3 text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
                                     <div class="w-6 h-6 rounded-full bg-accent-500/20 flex items-center justify-center flex-shrink-0 border border-accent-500/30">
                                         <i class="fa-solid fa-check text-accent-400 text-[10px]"></i>
-                                    </div> Dashboard Pengelola Hicare
+                                    </div>
+                                    Dashboard Pengelola Hicare
                                 </li>
                                 <li class="flex items-center gap-3 text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
                                     <div class="w-6 h-6 rounded-full bg-accent-500/20 flex items-center justify-center flex-shrink-0 border border-accent-500/30">
                                         <i class="fa-solid fa-check text-accent-400 text-[10px]"></i>
-                                    </div> Filter Cerdas HiCare 
+                                    </div>
+                                    Filter Cerdas HiCare 
                                 </li>
                                 <li class="flex items-center gap-3 text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
                                     <div class="w-6 h-6 rounded-full bg-accent-500/20 flex items-center justify-center flex-shrink-0 border border-accent-500/30">
                                         <i class="fa-solid fa-check text-accent-400 text-[10px]"></i>
-                                    </div> Template Pesan Custom
+                                    </div>
+                                    Template Pesan Custom
                                 </li>
                                 <li class="flex items-center gap-3 text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
                                     <div class="w-6 h-6 rounded-full bg-accent-500/20 flex items-center justify-center flex-shrink-0 border border-accent-500/30">
                                         <i class="fa-solid fa-check text-accent-400 text-[10px]"></i>
-                                    </div> Akses Cepat Download App
+                                    </div>
+                                    Akses Cepat Download App
                                 </li>
                             </ul>
                         </div>
@@ -261,22 +297,70 @@
 
                 <!-- Trust Badges -->
                 <div class="mt-20 pt-10 border-t border-slate-200/60 flex flex-col items-center">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Telah Dipercaya Oleh</p>
-                    <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale">
-                        <div class="flex items-center gap-2 font-bold text-xl"><i class="fa-solid fa-hospital text-2xl"></i> Klinik Utama</div>
-                        <div class="flex items-center gap-2 font-bold text-xl"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas</div>
-                        <div class="flex items-center gap-2 font-bold text-xl"><i class="fa-solid fa-stethoscope text-2xl"></i> Praktek Mandiri</div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Sudah Di Gunakan Oleh</p>
+                    
+                    <!-- Wadah Marquee (3 Baris) -->
+                    <div class="w-full max-w-5xl overflow-hidden relative marquee-container opacity-60 grayscale cursor-default flex flex-col gap-6 md:gap-8">
+                        
+                        <!-- Baris 1: Bergerak ke Kiri -->
+                        <div class="animate-marquee flex items-center gap-12 md:gap-24">
+                            <!-- Set 1 -->
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-hospital text-2xl"></i> Klinik</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Dinoyo</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-stethoscope text-2xl"></i> Praktek Perawat</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Bareng</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Kendalkerep</div>
+                            <!-- Set 2 (Duplikat) -->
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-hospital text-2xl"></i> Klinik</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Dinoyo</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-stethoscope text-2xl"></i> Praktek Mandiri</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Bareng</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Kendalkerep</div>
+                        </div>
+
+                        <!-- Baris 2: Bergerak ke Kanan (Reverse) -->
+                        <div class="animate-marquee flex items-center gap-12 md:gap-24" style="animation-direction: reverse; animation-duration: 45s;">
+                            <!-- Set 1 -->
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Janti</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Gribik</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-hospital text-2xl"></i> Klinik Sehat</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Poncokusumo</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-stethoscope text-2xl"></i> Bidan Praktek</div>
+                            <!-- Set 2 (Duplikat) -->
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Janti</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Gribik</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-hospital text-2xl"></i> Klinik Sehat</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Poncokusumo</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-stethoscope text-2xl"></i> Bidan Praktek</div>
+                        </div>
+
+                        <!-- Baris 3: Bergerak ke Kiri dengan kecepatan beda -->
+                        <div class="animate-marquee flex items-center gap-12 md:gap-24" style="animation-duration: 55s;">
+                            <!-- Set 1 -->
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-stethoscope text-2xl"></i> Perawat Praktek Mandiri</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Melati</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-hospital text-2xl"></i> RS Bersalin</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Mawar</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-stethoscope text-2xl"></i> Praktek Dokter Bersama</div>
+                            <!-- Set 2 (Duplikat) -->
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-stethoscope text-2xl"></i> Perawat Praktek Mandiri</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Melati</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-hospital text-2xl"></i> RS Bersalin</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-house-medical text-2xl"></i> Puskesmas Mawar</div>
+                            <div class="flex items-center gap-2 font-bold text-xl whitespace-nowrap"><i class="fa-solid fa-stethoscope text-2xl"></i> Praktek Dokter Bersama</div>
+                        </div>
+
                     </div>
                 </div>
             </section>
         </main>
 
-        <!-- Footer -->
+        <!-- Footer Landing Page -->
         <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
             <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 flex items-center justify-center overflow-hidden">
-                        <img src="https://github.com/rzcll/HiCare/blob/main/Logo.png?raw=true" alt="Logo HiCare Footer" class="w-full h-full object-contain">
+                    <div class="w-12 h-12 flex items-center justify-center">
+                        <img src="https://github.com/rzcll/WebsiteHiCare/blob/main/LOGO%20HiCare.png?raw=true" alt="Logo HiCare Footer" class="w-full h-full object-contain drop-shadow-sm">
                     </div>
                     <span class="font-bold text-slate-800">HiCare Smart Reminder &copy; 2026</span>
                 </div>
@@ -293,224 +377,10 @@
         </a>
     </div>
 
-    <!-- ========================================== -->
-    <!-- VIEW 2: LOGIN SECTION -->
-    <!-- ========================================== -->
-    <div id="view-login" class="hidden min-h-screen flex items-center justify-center p-4 relative z-10 transition-all duration-700 ease-in-out bg-[#f3f4f6]">
-        
-        <!-- Tombol Kembali ke Beranda -->
-        <button onclick="navigate('landing')" class="absolute top-6 left-6 flex items-center gap-2 text-gray-500 hover:text-brand-600 transition-colors font-bold text-sm bg-white px-4 py-2 rounded-full shadow-sm border border-gray-200">
-            <i class="ph ph-arrow-left"></i> Kembali ke Beranda
-        </button>
-
-        <div class="dark-shadow-card p-10 w-full max-w-md animate-slide-up bg-white">
-            <div class="text-center mb-10">
-                <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gray-50 shadow-inner border border-gray-200 mb-5 p-3">
-                    <img src="https://github.com/rzcll/Filterwarocket/blob/main/Logo.png?raw=true" alt="Logo" class="w-full h-full object-contain drop-shadow-sm">
-                </div>
-                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Login HiCare</h2>
-                <p class="text-gray-500 text-sm mt-2 font-medium">Sistem Filter & Template WA Blaster.</p>
-            </div>
-            
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Username</label>
-                    <div class="relative input-ring rounded-xl transition-all">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="ph ph-user text-gray-400 text-lg"></i>
-                        </div>
-                        <input type="text" id="usernameInput" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:outline-none transition-colors text-sm font-medium" placeholder="Masukkan username">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Password</label>
-                    <div class="relative input-ring rounded-xl transition-all">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="ph ph-lock-key text-gray-400 text-lg"></i>
-                        </div>
-                        <input type="password" id="passwordInput" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:outline-none transition-colors text-sm font-medium" placeholder="••••••••">
-                    </div>
-                </div>
-                
-                <div id="loginError" class="hidden text-red-600 text-sm flex items-center gap-2 font-medium bg-red-50 p-3 rounded-xl border border-red-200">
-                    <i class="ph ph-warning-circle text-lg"></i> <span id="loginErrorText"></span>
-                </div>
-                
-                <button id="loginBtn" class="w-full py-3.5 rounded-xl font-bold dark-shadow-btn mt-4 flex justify-center items-center gap-2 text-sm tracking-wide">
-                    Masuk ke Sistem <i class="ph ph-arrow-right font-bold"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- VIEW 3: DASHBOARD APP -->
-    <!-- ========================================== -->
-    <div id="view-dashboard" class="hidden w-full min-h-screen bg-[#f3f4f6]">
-        <div class="max-w-[1200px] mx-auto p-4 md:p-8 pt-8 relative z-10 transition-all duration-700">
-            <!-- Header Top Bar -->
-            <div class="dark-shadow-card flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 animate-slide-up p-5 md:px-6 bg-white">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-xl bg-gray-50 shadow-inner border border-gray-200 p-2 shrink-0">
-                        <img src="https://github.com/rzcll/Filterwarocket/blob/main/Logo.png?raw=true" alt="Logo" class="w-full h-full object-contain">
-                    </div>
-                    <div>
-                        <h1 class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight leading-none">
-                            Dashboard HiCare
-                        </h1>
-                        <p class="text-gray-500 text-xs md:text-sm mt-1.5 font-medium">
-                            Dashboard Aplikasi HiCare, Mesin Pengingat Pasien Hipertensi.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 w-full md:w-auto justify-between border-t border-gray-200 pt-4 md:pt-0 md:border-0">
-                    <div class="flex items-center gap-2 text-sm bg-gray-100 px-4 py-2 rounded-lg border border-gray-200">
-                        <i class="ph ph-user-circle text-xl text-gray-600"></i>
-                        <span id="displayUsername" class="font-bold text-gray-800"></span>
-                    </div>
-                    <button onclick="logout()" class="px-4 py-2 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg text-red-600 font-bold text-sm transition-all flex items-center gap-2 shadow-sm focus:ring-2 focus:ring-red-300">
-                        <i class="ph ph-sign-out"></i> Keluar
-                    </button>
-                </div>
-            </div>
-
-            <!-- Banner Info Lisensi -->
-            <div class="dark-shadow-card bg-white p-6 md:px-8 mb-8 flex flex-col md:flex-row justify-between items-center gap-6 animate-slide-up" style="animation-delay: 0.05s;">
-                <div class="flex flex-col sm:flex-row gap-8 w-full md:w-auto text-center sm:text-left">
-                    <div>
-                        <p class="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Kode Lisensi</p>
-                        <div class="flex items-center justify-center sm:justify-start gap-2">
-                            <button id="copyLicenseBtn" class="p-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg text-gray-600 transition-colors shadow-sm focus:ring-2 focus:ring-gray-300" title="Salin Kode Lisensi">
-                                <i class="ph ph-copy text-lg"></i>
-                            </button>
-                            <p class="text-lg sm:text-xl font-black text-gray-800 font-mono tracking-widest neumorphic-inset px-4 py-2 rounded-xl inline-block" id="uiLicenseCode">Memuat...</p>
-                        </div>
-                    </div>
-                    <div class="hidden sm:block w-px bg-gray-200 self-stretch"></div>
-                    <div>
-                        <p class="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Sisa Waktu Lisensi</p>
-                        <p class="text-lg sm:text-xl font-extrabold text-gray-800 flex items-center justify-center sm:justify-start gap-2" id="uiCountdown">
-                            <i class="ph ph-spinner-gap animate-spin text-gray-500"></i> Menghitung...
-                        </p>
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
-                    <a id="btnRenew" href="#" target="_blank" class="px-5 py-3 bg-orange-500 hover:bg-orange-600 border border-orange-600 text-white rounded-xl text-sm font-bold shadow-sm transition-all flex items-center justify-center gap-2 flex-1 sm:flex-none">
-                        <i class="ph ph-shopping-cart text-lg"></i> Perpanjang
-                    </a>
-                    <a id="btnDownload" href="#" target="_blank" class="px-5 py-3 dark-shadow-btn rounded-xl text-sm font-bold flex items-center justify-center gap-2 flex-1 sm:flex-none">
-                        <i class="ph ph-download-simple text-lg"></i> Download Aplikasi
-                    </a>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 animate-slide-up" style="animation-delay: 0.1s;">
-                <!-- Upload Area -->
-                <label id="dropZone" for="fileInput" class="dark-shadow-card relative group cursor-pointer flex flex-col items-center justify-center p-10 border-2 border-dashed border-gray-300 hover:border-gray-500 bg-gray-50 hover:bg-gray-100 transition-all duration-300 min-h-[260px]">
-                    <input type="file" id="fileInput" class="hidden" accept=".xlsx, .xls">
-                    <div class="w-16 h-16 rounded-2xl bg-white shadow-md border border-gray-200 text-gray-700 group-hover:text-gray-900 group-hover:scale-110 flex items-center justify-center mb-5 transition-all duration-300">
-                        <i class="ph ph-upload-simple text-3xl"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">Pilih atau Tarik File Excel</h3>
-                    <p class="text-sm text-gray-500 text-center px-4 font-medium">Format: <span class="px-2 py-1 rounded bg-gray-200 text-gray-800 text-xs font-bold">.xlsx</span> atau <span class="px-2 py-1 rounded bg-gray-200 text-gray-800 text-xs font-bold">.xls</span></p>
-                </label>
-
-                <!-- Export Area -->
-                <div id="exportCard" class="dark-shadow-card relative flex flex-col items-center justify-center p-10 transition-all duration-300 min-h-[260px] bg-gray-50 border-2 border-transparent">
-                    <div id="exportIconWrapper" class="w-16 h-16 rounded-2xl bg-gray-200 text-gray-400 flex items-center justify-center mb-4 transition-colors duration-300 border border-gray-300">
-                        <i id="exportIcon" class="ph ph-clock-countdown text-3xl"></i>
-                    </div>
-                    <h3 id="exportTitle" class="text-lg font-bold text-gray-500 mb-2">Menunggu Pemrosesan</h3>
-                    <p id="exportDesc" class="text-sm text-gray-400 text-center px-4 mb-6 font-medium">Unggah data Excel terlebih dahulu untuk ekspor.</p>
-                    
-                    <div class="flex w-full justify-center px-4 max-w-sm">
-                        <button id="exportExcelBtn" disabled class="w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 bg-gray-300 text-gray-500 cursor-not-allowed text-sm">
-                            <i class="ph ph-file-xls text-xl"></i> Unduh Excel (.xlsx)
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Template Section -->
-            <div id="templateSection" class="hidden mb-8 transform transition-all duration-500 animate-slide-up" style="animation-delay: 0.2s;">
-                <div class="dark-shadow-card overflow-hidden">
-                    <div class="bg-gray-100 border-b border-gray-200 p-4 px-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-white shadow-sm text-gray-800 flex items-center justify-center border border-gray-300">
-                                <i class="ph ph-chats-circle text-xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-gray-900 text-sm">Editor Template Pesan</h3>
-                                <p class="text-xs text-gray-500 font-medium">Gunakan {{Panggilan}}, {{Name}}, {{Alamat}}</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 w-full sm:w-auto">
-                            <button id="copyTemplateBtn" class="flex-1 sm:flex-none px-4 py-2 bg-white hover:bg-gray-50 border border-gray-300 text-gray-800 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm focus:ring-2 focus:ring-gray-300">
-                                <i class="ph ph-copy"></i> Salin
-                            </button>
-                            <button id="saveTemplateBtn" class="flex-1 sm:flex-none px-5 py-2 dark-shadow-btn rounded-lg text-sm font-bold flex items-center justify-center gap-2">
-                                <i class="ph ph-floppy-disk"></i> Simpan
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="relative">
-                        <div id="saveOverlay" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-10 hidden flex-col items-center justify-center">
-                            <i class="ph ph-spinner-gap animate-spin text-3xl text-gray-800 mb-3"></i>
-                            <span class="font-bold text-gray-900 text-sm">Menyimpan ke server...</span>
-                        </div>
-                        <textarea id="messageTemplate" class="w-full h-48 p-6 text-sm text-gray-800 bg-white resize-y leading-relaxed font-medium outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400 transition-all border-0 rounded-b-3xl" spellcheck="false" placeholder="Ketik template pesan di sini..."></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Table Section -->
-            <div id="tableSection" class="hidden dark-shadow-card overflow-hidden transform transition-all duration-500 animate-slide-up" style="animation-delay: 0.3s;">
-                <div class="p-5 px-6 border-b border-gray-200 flex justify-between items-center bg-gray-100">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-md bg-white shadow-sm text-gray-800 flex items-center justify-center border border-gray-300">
-                            <i class="ph ph-table text-lg"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-gray-900 text-sm">Pratinjau Data Valid</h3>
-                            <p class="text-xs text-gray-500 font-medium">Baris ini yang akan diekspor.</p>
-                        </div>
-                    </div>
-                    <div class="bg-gray-800 text-white px-3 py-1.5 rounded-md text-xs font-bold shadow-sm flex items-center gap-1">
-                        <span id="rowCount">0</span> Baris
-                    </div>
-                </div>
-                
-                <div class="table-container overflow-x-auto max-h-[400px]">
-                    <table class="w-full text-left border-collapse whitespace-nowrap bg-white">
-                        <thead class="bg-gray-50 sticky top-0 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.05)] border-b border-gray-200">
-                            <tr>
-                                <th class="py-4 px-6 font-bold text-gray-600 text-xs uppercase tracking-wider">No. WhatsApp</th>
-                                <th class="py-4 px-6 font-bold text-gray-600 text-xs uppercase tracking-wider">Nama Lengkap</th>
-                                <th class="py-4 px-6 font-bold text-gray-600 text-xs uppercase tracking-wider">Panggilan</th>
-                                <th class="py-4 px-6 font-bold text-gray-600 text-xs uppercase tracking-wider">Alamat</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody" class="divide-y divide-gray-100 text-sm font-medium text-gray-800">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div id="emptyState" class="hidden flex-col items-center justify-center p-16 dark-shadow-card text-center mt-8 animate-slide-up bg-white">
-                <div class="w-20 h-20 bg-gray-100 text-gray-500 rounded-2xl flex items-center justify-center mb-5 border border-gray-200 shadow-inner">
-                    <i class="ph ph-warning text-4xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">Tidak Ada Data Valid</h3>
-                <p class="text-gray-500 text-sm max-w-sm">Sistem tidak menemukan baris data yang valid dimulai dari baris ke-5 pada file Excel tersebut.</p>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ========================================== -->
-    <!-- MODALS (Pricing & Checkout) -->
-    <!-- ========================================== -->
+    <!-- =========================================================================
+         MODALS LANDING PAGE 
+         ========================================================================= -->
+    <!-- Checkout Modal -->
     <div id="checkout-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-3xl w-full max-w-lg shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col max-h-[95vh] relative">
             <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center relative">
@@ -525,7 +395,7 @@
                 <div id="order-summary" class="bg-brand-50 border border-brand-100 rounded-2xl p-4 text-center"></div>
                 <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center relative bg-white">
                     <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-white px-3 text-xs font-bold text-slate-400">Scan QRIS</div>
-                    <img id="qris-image-preview" src="" alt="QR Code QRIS" class="w-48 h-48 object-contain mx-auto rounded-xl shadow-sm border border-slate-100" onerror="this.src='https://github.com/rzcll/HiCare/blob/main/Logo.png?raw=true'">
+                    <img id="qris-image-preview" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="QR Code QRIS" class="w-48 h-48 object-contain mx-auto rounded-xl shadow-sm border border-slate-100" onerror="this.src='https://github.com/rzcll/WebsiteHiCare/blob/main/LOGO%20HiCare.png?raw=true'">
                     <p class="text-[11px] text-slate-400 mt-4"><i class="fa-solid fa-info-circle"></i> Mendukung semua aplikasi E-Wallet & M-Banking</p>
                 </div>
                 <div class="space-y-4">
@@ -554,6 +424,7 @@
         </div>
     </div>
 
+    <!-- Modal Penawaran HiCare PRO -->
     <div id="pro-checkout-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-3xl w-full max-w-lg shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col max-h-[95vh] relative border-t-8 border-accent-500">
             <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center relative">
@@ -567,21 +438,25 @@
             <div class="p-6 overflow-y-auto custom-scrollbar space-y-6">
                 <div class="space-y-2">
                     <label class="text-xs font-bold text-slate-500 uppercase ml-1">Pilih Durasi Paket PRO</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-calendar-days absolute left-4 top-1/2 transform -translate-y-1/2 text-accent-500"></i>
-                        <select id="pro-duration-select" onchange="updateProSelection()" class="w-full pl-11 pr-10 py-3.5 rounded-xl border-2 border-accent-200 bg-accent-50/30 text-slate-800 font-bold focus:outline-none focus:border-accent-500 appearance-none cursor-pointer hover:bg-accent-50/50 transition">
-                            <option value="1">1 Bulan (Rp 70.000)</option>
-                            <option value="3">3 Bulan (Rp 195.000)</option>
-                            <option value="6">6 Bulan (Rp 390.000)</option>
-                            <option value="12">12 Bulan (Rp 750.000)</option>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-calendar-days text-accent-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <select id="pro-duration-select" onchange="updateProSelection()" class="w-full pl-11 pr-10 py-4 rounded-xl border-2 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-900 font-extrabold text-sm focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 appearance-none cursor-pointer hover:border-orange-400 hover:shadow-md transition-all duration-300">
+                            <option value="1" class="font-bold text-slate-800 bg-white">1 Bulan (Rp 70.000)</option>
+                            <option value="3" class="font-bold text-slate-800 bg-white">3 Bulan (Rp 195.000)</option>
+                            <option value="6" class="font-bold text-slate-800 bg-white">6 Bulan (Rp 390.000)</option>
+                            <option value="12" class="font-bold text-slate-800 bg-white">12 Bulan (Rp 750.000)</option>
                         </select>
-                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-chevron-down text-orange-500 font-bold group-hover:translate-y-0.5 transition-transform duration-300"></i>
+                        </div>
                     </div>
                     <p class="text-[10px] text-slate-400 ml-1 mt-1">*Harga sudah termasuk paket dasar + fitur PRO (Rp 20.000/bln)</p>
                 </div>
                 <div class="border-2 border-dashed border-accent-200 rounded-2xl p-6 text-center relative bg-white">
                     <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-accent-50 text-accent-600 px-3 py-0.5 rounded-full text-xs font-bold border border-accent-100">Scan QRIS PRO</div>
-                    <img id="pro-qris-image-preview" src="" alt="QR Code QRIS PRO" class="w-48 h-48 object-contain mx-auto rounded-xl shadow-sm border border-slate-100" onerror="this.src='https://github.com/rzcll/HiCare/blob/main/Logo.png?raw=true'">
+                    <img id="pro-qris-image-preview" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="QR Code QRIS PRO" class="w-48 h-48 object-contain mx-auto rounded-xl shadow-sm border border-slate-100" onerror="this.src='https://github.com/rzcll/WebsiteHiCare/blob/main/LOGO%20HiCare.png?raw=true'">
                     <p id="pro-price-display" class="text-xl font-black text-slate-800 mt-4">Rp 70.000</p>
                 </div>
                 <div class="space-y-4">
@@ -610,44 +485,290 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- MAIN JAVASCRIPT LOGIC -->
-    <!-- ========================================== -->
-    <script>
-        // --- 1. NAVIGATION LOGIC (Single Page App) ---
-        const viewLanding = document.getElementById('view-landing');
-        const viewLogin = document.getElementById('view-login');
-        const viewDashboard = document.getElementById('view-dashboard');
+    <!-- =========================================================================
+         SECTION APLIKASI LOGIN DASHBOARD 
+         ========================================================================= -->
+    <div id="loginSection" class="hidden min-h-screen flex-col items-center justify-center p-4 relative z-50 transition-all duration-700 ease-in-out w-full font-['Plus_Jakarta_Sans'] bg-[#f3f4f6]">
+        <button onclick="showLandingPage()" class="absolute top-6 left-6 flex items-center gap-2 text-gray-500 hover:text-brand-600 font-bold transition-colors z-20">
+            <i class="ph ph-arrow-left text-xl"></i> Kembali ke Beranda
+        </button>
 
-        function navigate(view) {
+        <!-- Tombol Gerigi Control Panel -->
+        <a href="https://hicare-control.vercel.app/" target="_blank" class="absolute bottom-6 right-6 flex items-center justify-center w-12 h-12 text-gray-400 hover:text-gray-700 hover:rotate-90 transition-all duration-500 z-20" title="Control Panel">
+            <i class="fa-solid fa-gear text-3xl"></i>
+        </a>
+
+        <div class="dark-shadow-card p-10 w-full max-w-md animate-slide-up">
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center justify-center w-40 h-40 mb-2 hover:scale-125 transition-transform duration-300 cursor-default">
+                    <img src="https://github.com/rzcll/WebsiteHiCare/blob/main/LOGO%20HiCare.png?raw=true" alt="Logo" class="w-full h-full object-contain drop-shadow-md">
+                </div>
+                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Login HiCare</h2>
+                <p class="text-gray-500 text-sm mt-2 font-medium">Sistem Filter & Template WA Blaster.</p>
+            </div>
+            
+            <div class="space-y-5 text-left">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Username</label>
+                    <div class="relative input-ring rounded-xl transition-all">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="ph ph-user text-gray-400 text-lg"></i>
+                        </div>
+                        <input type="text" id="usernameInput" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:outline-none transition-colors text-sm font-medium" placeholder="Masukkan username">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Password</label>
+                    <div class="relative input-ring rounded-xl transition-all">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="ph ph-lock-key text-gray-400 text-lg"></i>
+                        </div>
+                        <input type="password" id="passwordInput" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:outline-none transition-colors text-sm font-medium" placeholder="••••••••">
+                    </div>
+                </div>
+                
+                <div id="loginError" class="hidden text-red-600 text-sm flex items-center gap-2 font-medium bg-red-50 p-3 rounded-xl border border-red-200">
+                    <i class="ph ph-warning-circle text-lg"></i> <span id="loginErrorText"></span>
+                </div>
+                
+                <button id="loginBtn" class="group w-full py-3.5 rounded-xl font-bold bg-gray-800 text-white hover:bg-green-500 hover:text-white hover:shadow-[0_10px_20px_-5px_rgba(34,197,94,0.5)] transition-all duration-300 mt-4 flex justify-center items-center gap-2 text-sm tracking-wide shadow-[0_10px_20px_-5px_rgba(0,0,0,0.4)]">
+                    Masuk ke Sistem <i class="ph ph-arrow-right font-bold group-hover:translate-x-1 transition-transform duration-300"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         SECTION APLIKASI UTAMA (DASHBOARD)
+         ========================================================================= -->
+    <div id="appSection" class="hidden w-full max-w-[1200px] mx-auto p-4 md:p-8 pt-8 relative z-50 transition-all duration-700 font-['Plus_Jakarta_Sans'] bg-[#F4F6F8]">
+        
+        <!-- Header Top Bar -->
+        <div class="dark-shadow-card flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 animate-slide-up p-5 md:px-6">
+            <div class="flex items-center gap-4">
+                <div class="w-28 h-28 flex items-center justify-center shrink-0 hover:scale-125 transition-transform duration-300 cursor-default">
+                    <img src="https://github.com/rzcll/WebsiteHiCare/blob/main/LOGO%20HiCare.png?raw=true" alt="Logo" class="w-full h-full object-contain drop-shadow-md">
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight leading-none">
+                        Dashboard HiCare
+                    </h1>
+                    <p class="text-gray-500 text-xs md:text-sm mt-1.5 font-medium">
+                        Dashboard Aplikasi HiCare, Mesin Pengingat Pasien Hipertensi.
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 w-full md:w-auto justify-between border-t border-gray-200 pt-4 md:pt-0 md:border-0">
+                <div class="flex items-center gap-2 text-sm bg-gray-100 px-4 py-2 rounded-lg border border-gray-200">
+                    <i class="ph ph-user-circle text-xl text-gray-600"></i>
+                    <span id="displayUsername" class="font-bold text-gray-800"></span>
+                </div>
+                <button onclick="logout()" class="px-4 py-2 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg text-red-600 font-bold text-sm transition-all flex items-center gap-2 shadow-sm focus:ring-2 focus:ring-red-300">
+                    <i class="ph ph-sign-out"></i> Keluar
+                </button>
+            </div>
+        </div>
+
+        <!-- Banner Info Lisensi -->
+        <div class="dark-shadow-card bg-white p-6 md:px-8 mb-8 flex flex-col md:flex-row justify-between items-center gap-6 animate-slide-up" style="animation-delay: 0.05s;">
+            <div class="flex flex-col sm:flex-row gap-8 w-full md:w-auto text-center sm:text-left">
+                <div>
+                    <p class="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Kode Lisensi</p>
+                    <div class="flex items-center justify-center sm:justify-start gap-2">
+                        <button id="copyLicenseBtn" class="p-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg text-gray-600 transition-colors shadow-sm focus:ring-2 focus:ring-gray-300" title="Salin Kode Lisensi">
+                            <i class="ph ph-copy text-lg"></i>
+                        </button>
+                        <p class="text-lg sm:text-xl font-black text-gray-800 font-mono tracking-widest neumorphic-inset px-4 py-2 rounded-xl inline-block" id="uiLicenseCode">Memuat...</p>
+                    </div>
+                </div>
+                <div class="hidden sm:block w-px bg-gray-200 self-stretch"></div>
+                <div>
+                    <p class="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Sisa Waktu Lisensi</p>
+                    <p class="text-lg sm:text-xl font-extrabold text-gray-800 flex items-center justify-center sm:justify-start gap-2" id="uiCountdown">
+                        <i class="ph ph-spinner-gap animate-spin text-gray-500"></i> Menghitung...
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
+                <button onclick="goToPackages()" class="px-5 py-3 bg-orange-500 hover:bg-orange-600 border border-orange-600 text-white rounded-xl text-sm font-bold shadow-sm transition-all flex items-center justify-center gap-2 flex-1 sm:flex-none">
+                    <i class="ph ph-shopping-cart text-lg"></i> Perpanjang
+                </button>
+                <a id="btnDownload" href="https://drive.google.com/drive/folders/1scPFSNXauFBrYnL75Oy68S6U1HEgky-e" target="_blank" class="px-5 py-3 dark-shadow-btn rounded-xl text-sm font-bold flex items-center justify-center gap-2 flex-1 sm:flex-none">
+                    <i class="ph ph-download-simple text-lg"></i> Download Aplikasi
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 animate-slide-up" style="animation-delay: 0.1s;">
+            <!-- Upload Area -->
+            <label id="dropZone" for="fileInput" class="dark-shadow-card relative group cursor-pointer flex flex-col items-center justify-center p-10 border-2 border-dashed border-gray-300 hover:border-gray-500 bg-gray-50 hover:bg-gray-100 transition-all duration-300 min-h-[260px]">
+                <input type="file" id="fileInput" class="hidden" accept=".xlsx, .xls">
+                <div class="w-16 h-16 rounded-2xl bg-white shadow-md border border-gray-200 text-gray-700 group-hover:text-gray-900 group-hover:scale-110 flex items-center justify-center mb-5 transition-all duration-300">
+                    <i class="ph ph-upload-simple text-3xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Pilih atau Tarik File Excel</h3>
+                <p class="text-sm text-gray-500 text-center px-4 font-medium">Format: <span class="px-2 py-1 rounded bg-gray-200 text-gray-800 text-xs font-bold">.xlsx</span> atau <span class="px-2 py-1 rounded bg-gray-200 text-gray-800 text-xs font-bold">.xls</span></p>
+            </label>
+
+            <!-- Export Area -->
+            <div id="exportCard" class="dark-shadow-card relative flex flex-col items-center justify-center p-10 transition-all duration-300 min-h-[260px] bg-gray-50 border-2 border-transparent">
+                <div id="exportIconWrapper" class="w-16 h-16 rounded-2xl bg-gray-200 text-gray-400 flex items-center justify-center mb-4 transition-colors duration-300 border border-gray-300">
+                    <i id="exportIcon" class="ph ph-clock-countdown text-3xl"></i>
+                </div>
+                <h3 id="exportTitle" class="text-lg font-bold text-gray-500 mb-2">Menunggu Pemrosesan</h3>
+                <p id="exportDesc" class="text-sm text-gray-400 text-center px-4 mb-6 font-medium">Unggah data Excel terlebih dahulu untuk ekspor.</p>
+                
+                <div class="flex w-full justify-center px-4 max-w-sm">
+                    <button id="exportExcelBtn" disabled class="w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 bg-gray-300 text-gray-500 cursor-not-allowed text-sm">
+                        <i class="ph ph-file-xls text-xl"></i> Unduh Excel (.xlsx)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Section -->
+        <div id="templateSection" class="hidden mb-8 transform transition-all duration-500 animate-slide-up" style="animation-delay: 0.2s;">
+            <div class="dark-shadow-card overflow-hidden">
+                <div class="bg-gray-100 border-b border-gray-200 p-4 px-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-white shadow-sm text-gray-800 flex items-center justify-center border border-gray-300">
+                            <i class="ph ph-chats-circle text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 text-sm">Editor Template Pesan</h3>
+                            <p class="text-xs text-gray-500 font-medium">Gunakan {{Panggilan}}, {{Name}}, {{Alamat}}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <button id="copyTemplateBtn" class="flex-1 sm:flex-none px-4 py-2 bg-white hover:bg-gray-50 border border-gray-300 text-gray-800 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm focus:ring-2 focus:ring-gray-300">
+                            <i class="ph ph-copy"></i> Salin
+                        </button>
+                        <button id="saveTemplateBtn" class="flex-1 sm:flex-none px-5 py-2 dark-shadow-btn rounded-lg text-sm font-bold flex items-center justify-center gap-2">
+                            <i class="ph ph-floppy-disk"></i> Simpan
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div id="saveOverlay" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-10 hidden flex-col items-center justify-center">
+                        <i class="ph ph-spinner-gap animate-spin text-3xl text-gray-800 mb-3"></i>
+                        <span class="font-bold text-gray-900 text-sm">Menyimpan ke server...</span>
+                    </div>
+                    <textarea id="messageTemplate" class="w-full h-48 p-6 text-sm text-gray-800 bg-white resize-y leading-relaxed font-medium outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400 transition-all border-0 rounded-b-3xl" spellcheck="false" placeholder="Ketik template pesan di sini..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div id="tableSection" class="hidden dark-shadow-card overflow-hidden transform transition-all duration-500 animate-slide-up" style="animation-delay: 0.3s;">
+            <div class="p-5 px-6 border-b border-gray-200 flex justify-between items-center bg-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-md bg-white shadow-sm text-gray-800 flex items-center justify-center border border-gray-300">
+                        <i class="ph ph-table text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-sm">Pratinjau Data Valid</h3>
+                        <p class="text-xs text-gray-500 font-medium">Baris ini yang akan diekspor.</p>
+                    </div>
+                </div>
+                <div class="bg-gray-800 text-white px-3 py-1.5 rounded-md text-xs font-bold shadow-sm flex items-center gap-1">
+                    <span id="rowCount">0</span> Baris
+                </div>
+            </div>
+            
+            <div class="table-container overflow-x-auto max-h-[400px]">
+                <table class="w-full text-left border-collapse whitespace-nowrap bg-white">
+                    <thead class="bg-gray-50 sticky top-0 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.05)] border-b border-gray-200">
+                        <tr>
+                            <th class="py-4 px-6 font-bold text-gray-600 text-xs uppercase tracking-wider">No. WhatsApp</th>
+                            <th class="py-4 px-6 font-bold text-gray-600 text-xs uppercase tracking-wider">Nama Lengkap</th>
+                            <th class="py-4 px-6 font-bold text-gray-600 text-xs uppercase tracking-wider">Panggilan</th>
+                            <th class="py-4 px-6 font-bold text-gray-600 text-xs uppercase tracking-wider">Alamat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-gray-100 text-sm font-medium text-gray-800">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="emptyState" class="hidden flex-col items-center justify-center p-16 dark-shadow-card text-center mt-8 animate-slide-up">
+            <div class="w-20 h-20 bg-gray-100 text-gray-500 rounded-2xl flex items-center justify-center mb-5 border border-gray-200 shadow-inner">
+                <i class="ph ph-warning text-4xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Tidak Ada Data Valid</h3>
+            <p class="text-gray-500 text-sm max-w-sm">Sistem tidak menemukan baris data yang valid dimulai dari baris ke-5 pada file Excel tersebut.</p>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         SCRIPT SECTION
+         ========================================================================= -->
+    <script>
+        // ==========================================
+        // SCRIPT TRANsISI ANTARA LANDING PAGE & APP
+        // ==========================================
+        const landingPage = document.getElementById('landingPageContainer');
+        const loginSection = document.getElementById('loginSection');
+        const appSection = document.getElementById('appSection');
+
+        function showAppLogin() {
+            landingPage.classList.add('hidden');
+            landingPage.classList.remove('flex');
+            
+            loginSection.classList.remove('hidden');
+            loginSection.classList.add('flex');
+            loginSection.style.opacity = '1';
+            loginSection.style.transform = 'scale(1)';
+            
             window.scrollTo(0, 0);
-            if(view === 'landing') {
-                viewLanding.classList.remove('hidden');
-                viewLanding.classList.add('flex');
-                viewLogin.classList.add('hidden');
-                viewDashboard.classList.add('hidden');
-            } else if (view === 'login') {
-                viewLanding.classList.add('hidden');
-                viewLanding.classList.remove('flex');
-                viewLogin.classList.remove('hidden');
-                viewLogin.classList.add('flex');
-                viewDashboard.classList.add('hidden');
-            } else if (view === 'dashboard') {
-                viewLanding.classList.add('hidden');
-                viewLanding.classList.remove('flex');
-                viewLogin.classList.add('hidden');
-                viewLogin.classList.remove('flex');
-                viewDashboard.classList.remove('hidden');
-                viewDashboard.classList.add('block');
-            }
         }
 
-        // --- 2. LANDING PAGE & PRICING LOGIC ---
+        function showLandingPage() {
+            loginSection.classList.add('hidden');
+            loginSection.classList.remove('flex');
+            appSection.classList.add('hidden');
+            
+            landingPage.classList.remove('hidden');
+            landingPage.classList.add('flex');
+            
+            window.scrollTo(0, 0);
+        }
+
+        function goToPackages() {
+            currentLoggedUser = "";
+            if (countdownInterval) clearInterval(countdownInterval);
+            document.getElementById('usernameInput').value = "";
+            document.getElementById('passwordInput').value = "";
+            document.getElementById('tableBody').innerHTML = '';
+            showEmptyState(false);
+            updateExportUI(false);
+            document.getElementById('templateSection').classList.add('hidden');
+            document.getElementById('tableSection').classList.add('hidden');
+
+            appSection.classList.add('hidden');
+            loginSection.classList.add('hidden');
+            loginSection.classList.remove('flex');
+            
+            landingPage.classList.remove('hidden');
+            landingPage.classList.add('flex');
+
+            setTimeout(() => {
+                const paketSection = document.getElementById('paket');
+                if(paketSection) {
+                    paketSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
+        }
+
+        // ==========================================
+        // DATABASE HARDCODED LANDING PAGE
+        // ==========================================
         const database = [
-            { id: "wc-01", name: "Basic Care", duration: "1", price: "50000", discount: "0", features: "Akses 1 Bulan, Pesan Unlimited", qris_url: "https://github.com/rzcll/HiCare/blob/main/50.jpeg?raw=true" },
-            { id: "wc-02", name: "Standard Care", duration: "3", price: "150000", discount: "10", features: "Akses 3 Bulan, Pesan Unlimited, Potongan Harga 10%", qris_url: "https://github.com/rzcll/HiCare/blob/main/135.jpeg?raw=true" },
-            { id: "wc-03", name: "Premium Care", duration: "6", price: "300000", discount: "10", features: "Akses 6 Bulan, Pesan Unlimited, Potongan Harga 10%, Layanan Prioritas", qris_url: "https://github.com/rzcll/HiCare/blob/main/270.jpeg?raw=true" },
-            { id: "wc-04", name: "Ultimate Care", duration: "12", price: "600000", discount: "15", features: "Akses 12 Bulan, Pesan Unlimited, Potongan Harga 15%, Layanan VIP, Garansi Kendala aplikasi", qris_url: "https://github.com/rzcll/HiCare/blob/main/510.jpeg?raw=true" }
+            { id: "wc-01", name: "Basic Care", duration: "1", price: "50000", discount: "0", features: "Akses 1 Bulan, Pesan Unlimited", qris_url: "https://github.com/rzcll/WebsiteHiCare/blob/main/50.jpeg?raw=true" },
+            { id: "wc-02", name: "Standard Care", duration: "3", price: "150000", discount: "10", features: "Akses 3 Bulan, Pesan Unlimited, Potongan Harga 10%", qris_url: "https://github.com/rzcll/WebsiteHiCare/blob/main/135.jpeg?raw=true" },
+            { id: "wc-03", name: "Premium Care", duration: "6", price: "300000", discount: "10", features: "Akses 6 Bulan,  Pesan Unlimited, Potongan Harga 10%, Layanan Prioritas", qris_url: "https://github.com/rzcll/WebsiteHiCare/blob/main/270.jpeg?raw=true" },
+            { id: "wc-04", name: "Ultimate Care", duration: "12", price: "600000", discount: "15", features: "Akses 12 Bulan, Pesan Unlimited, Potongan Harga 15%, Layanan VIP, Garansi Kendala aplikasi", qris_url: "https://github.com/rzcll/WebsiteHiCare/blob/main/510.jpeg?raw=true" }
         ];
 
         const proDatabase = {
@@ -662,23 +783,33 @@
         function renderStorefront() {
             const grid = document.getElementById('plans-grid');
             grid.innerHTML = '';
+            
             database.forEach(item => {
                 const finalPrice = Math.floor(item.price * (1 - (item.discount/100)));
                 const features = item.features.split(',').map(f => f.trim());
+                
                 grid.innerHTML += `
-                    <div class="glass-card group p-5 md:p-6 rounded-[1.5rem] flex flex-col h-full cursor-pointer relative overflow-hidden bg-white">
+                    <div class="glass-card group p-5 md:p-6 rounded-[1.5rem] flex flex-col h-full cursor-pointer relative overflow-hidden">
                         <div class="absolute -top-10 -right-10 w-24 h-24 bg-accent-500/10 rounded-full blur-xl group-hover:bg-accent-500/30 transition-all duration-500"></div>
                         <div class="mb-4 relative z-10">
-                            <span class="text-[10px] font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full group-hover:bg-accent-50 group-hover:text-accent-600 transition-colors border border-brand-100 group-hover:border-accent-200 uppercase tracking-wide">${item.duration} Bulan</span>
-                            <h3 class="text-lg md:text-xl font-extrabold mt-3 text-slate-800 group-hover:text-accent-600 transition-colors">${item.name}</h3>
+                            <span class="text-[10px] font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full group-hover:bg-accent-50 group-hover:text-accent-600 transition-colors border border-brand-100 group-hover:border-accent-200 uppercase tracking-wide">
+                                ${item.duration} Bulan
+                            </span>
+                            <h3 class="text-lg md:text-xl font-extrabold mt-3 text-slate-800 group-hover:text-accent-600 transition-colors">
+                                ${item.name}
+                            </h3>
                         </div>
                         <div class="mb-5 relative z-10 border-b border-slate-200/50 pb-4 group-hover:border-accent-200 transition-colors">
                             <div class="flex items-baseline gap-1">
-                                <span class="text-2xl md:text-3xl font-black text-slate-900 group-hover:text-accent-500 transition-colors">Rp${finalPrice.toLocaleString('id-ID')}</span>
+                                <span class="text-2xl md:text-3xl font-black text-slate-900 group-hover:text-accent-500 transition-colors">
+                                    Rp${finalPrice.toLocaleString('id-ID')}
+                                </span>
                             </div>
                             ${item.discount > 0 ? `
                                 <div class="flex items-center gap-2 mt-1">
-                                    <p class="text-[11px] text-slate-400 font-semibold line-through decoration-red-500/50">Rp${parseInt(item.price).toLocaleString('id-ID')} </p>
+                                    <p class="text-[11px] text-slate-400 font-semibold line-through decoration-red-500/50">
+                                        Rp${parseInt(item.price).toLocaleString('id-ID')} 
+                                    </p>
                                     <span class="text-[9px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-bold">Hemat ${item.discount}%</span>
                                 </div>
                             ` : ''}
@@ -691,7 +822,9 @@
                                 </li>
                             `).join('')}
                         </ul>
-                        <button onclick="openCheckout('${item.id}')" class="w-full py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-accent-600 group-hover:bg-accent-500 transition-all shadow-md group-hover:shadow-accent-500/30 relative z-10">Pilih Paket Ini</button>
+                        <button onclick="openCheckout('${item.id}')" class="w-full py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-accent-600 group-hover:bg-accent-500 transition-all shadow-md group-hover:shadow-accent-500/30 relative z-10">
+                            Pilih Paket Ini
+                        </button>
                     </div>
                 `;
             });
@@ -701,7 +834,9 @@
             const item = database.find(i => i.id === id);
             currentSelectedPackage = item; 
             const price = Math.floor(item.price * (1 - (item.discount/100)));
+            
             document.getElementById('qris-image-preview').src = item.qris_url;
+            
             document.getElementById('order-summary').innerHTML = `
                 <h4 class="text-lg font-bold text-brand-700 mb-1">${item.name}</h4>
                 <div class="flex justify-center items-center gap-2 text-sm text-brand-600 font-semibold">
@@ -710,6 +845,7 @@
                     <span>Rp${price.toLocaleString('id-ID')}</span>
                 </div>
             `;
+            
             document.getElementById('checkout-modal').classList.remove('hidden');
             document.getElementById('checkout-modal').classList.add('flex');
         }
@@ -722,10 +858,13 @@
         function simulatePayment() {
             const name = document.getElementById('buyer-name').value.trim();
             const puskesmas = document.getElementById('buyer-puskesmas').value.trim();
+
             if(!name || !puskesmas) return alert("Mohon lengkapi Nama Lengkap PIC dan Nama Instansi Anda.");
             if(!currentSelectedPackage) return alert("Terjadi kesalahan, silakan refresh halaman.");
+
             const message = `saya ${name} dari puskesmas ${puskesmas} akan melakukan transaksi paket ${currentSelectedPackage.duration} bulan`;
-            window.open(`https://wa.me/6281334392434?text=${encodeURIComponent(message)}`, '_blank');
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/6281334392434?text=${encodedMessage}`, '_blank');
             closeCheckoutModal();
         }
 
@@ -751,16 +890,26 @@
             const name = document.getElementById('pro-buyer-name').value.trim();
             const puskesmas = document.getElementById('pro-buyer-puskesmas').value.trim();
             const selectedDuration = document.getElementById('pro-duration-select').value;
+
             if(!name || !puskesmas) return alert("Mohon lengkapi Nama Lengkap PIC dan Nama Instansi Anda.");
+
             const message = `saya ${name} dari puskesmas ${puskesmas} akan melakukan transaksi PAKET HiCare PRO ${selectedDuration} bulan`;
-            window.open(`https://wa.me/6281334392434?text=${encodeURIComponent(message)}`, '_blank');
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/6281334392434?text=${encodedMessage}`, '_blank');
             closeProCheckoutModal();
         }
 
         renderStorefront();
 
-        // --- 3. LOGIN & DASHBOARD LOGIC ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbz1kzC7aflCpLWzRuyTw_1jFPYiUr9Dp_VF7YWdLehAhzNYadbrRDJdsfC1GKecXzjZ/exec";
+        // ==========================================
+        // SCRIPT APLIKASI DASHBOARD (SUPABASE & EXCEL)
+        // ==========================================
+        
+        // KONFIGURASI SUPABASE (GANTI DENGAN KREDENSIAL PROJECT SUPABASE ANDA)
+        const SUPABASE_URL = "https://fxgbfvvbyeoyybywyyyc.supabase.co"; // Ganti ini
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4Z2JmdnZieWVveXlieXd5eXljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNzAwNjQsImV4cCI6MjA5NTc0NjA2NH0.t4uioQclA8zHqaP2Y2rwpTLhJl4y_ObZK8Fn1B-024s"; // Ganti ini
+        
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         let currentLoggedUser = "";
         let countdownInterval;
@@ -770,90 +919,115 @@
         const loginErrorText = document.getElementById('loginErrorText');
         const displayUsername = document.getElementById('displayUsername');
         const messageTemplate = document.getElementById('messageTemplate');
+        
         const uiLicenseCode = document.getElementById('uiLicenseCode');
         const uiCountdown = document.getElementById('uiCountdown');
-        const btnRenew = document.getElementById('btnRenew');
         const btnDownload = document.getElementById('btnDownload');
         const copyLicenseBtn = document.getElementById('copyLicenseBtn');
 
         copyLicenseBtn.addEventListener('click', function() {
             const licenseText = uiLicenseCode.textContent;
             if (licenseText === "Memuat..." || licenseText === "-") return;
+            
             const tempTextArea = document.createElement("textarea");
             tempTextArea.value = licenseText;
             document.body.appendChild(tempTextArea);
             tempTextArea.select();
             document.execCommand("copy");
             document.body.removeChild(tempTextArea);
+
             const icon = this.querySelector('i');
             icon.className = 'ph ph-check text-green-600 text-lg';
-            setTimeout(() => icon.className = 'ph ph-copy text-lg', 2000);
+            
+            setTimeout(() => {
+                icon.className = 'ph ph-copy text-lg';
+            }, 2000);
         });
 
         function startCountdown(expiryDateStr) {
             if (countdownInterval) clearInterval(countdownInterval);
+            
             if (!expiryDateStr) {
                 uiCountdown.innerHTML = '<span class="text-gray-500 text-sm font-normal">Tidak ada batas waktu</span>';
                 return;
             }
+
             const targetDate = new Date(expiryDateStr).getTime();
             if (isNaN(targetDate)) {
                 uiCountdown.innerHTML = '<span class="text-gray-500 text-sm font-normal">Format waktu salah</span>';
                 return;
             }
+
             countdownInterval = setInterval(() => {
                 const now = new Date().getTime();
                 const distance = targetDate - now;
+
                 if (distance < 0) {
                     clearInterval(countdownInterval);
                     uiCountdown.innerHTML = '<span class="text-red-600 font-bold"><i class="ph ph-warning-circle"></i> Lisensi Habis</span>';
                     return;
                 }
+
                 const totalDays = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const months = Math.floor(totalDays / 30);
                 const days = totalDays % 30;
+
                 uiCountdown.innerHTML = `<span class="neumorphic-inset px-4 py-2 rounded-xl text-gray-800 font-bold text-sm sm:text-base">${months} Bulan</span> 
                                          <span class="neumorphic-inset px-4 py-2 rounded-xl text-gray-800 font-bold text-sm sm:text-base">${days} Hari</span>`;
             }, 1000);
         }
 
-        loginBtn.addEventListener('click', function() {
+        // FUNGSI LOGIN MENGGUNAKAN SUPABASE
+        loginBtn.addEventListener('click', async function() {
             const user = document.getElementById('usernameInput').value;
             const pass = document.getElementById('passwordInput').value;
             
             if(!user || !pass) return showLoginError("Username dan password harus diisi!");
-            
+            if(SUPABASE_URL === "https://YOUR_PROJECT_ID.supabase.co") return showLoginError("Tolong isi URL dan Key Supabase di dalam source code HTML.");
+
             const originalBtnText = loginBtn.innerHTML;
             loginBtn.innerHTML = '<i class="ph ph-spinner animate-spin text-lg"></i> Memverifikasi...';
             loginBtn.disabled = true;
             loginBtn.classList.add('opacity-80');
             loginError.classList.add('hidden');
 
-            fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: "login", username: user, password: pass })
-            })
-            .then(response => response.json())
-            .then(response => {
-                if(response.success) {
+            try {
+                // Fetch user data dari table 'users'
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('username', user)
+                    .eq('password', pass)
+                    .single(); // Expecting 1 exact match
+
+                if (error || !data) {
+                    showLoginError("Username atau password salah!");
+                } else {
+                    // Login Berhasil
                     currentLoggedUser = user;
                     displayUsername.textContent = user;
-                    if(response.template) messageTemplate.value = response.template;
-                    uiLicenseCode.textContent = response.licenseCode || "-";
-                    btnRenew.href = response.renewLink || "#";
-                    btnDownload.href = response.downloadLink || "#";
-                    startCountdown(response.expiryDate);
-                    navigate('dashboard');
-                } else {
-                    showLoginError(response.message);
+                    
+                    // Disesuaikan dengan kolom "templatePesan" di DB
+                    if(data.templatePesan) messageTemplate.value = data.templatePesan;
+                    
+                    // Disesuaikan dengan kolom "licenseCode" & "expiryDate"
+                    uiLicenseCode.textContent = data.licenseCode || "-";
+                    btnDownload.href = "https://drive.google.com/drive/folders/1scPFSNXauFBrYnL75Oy68S6U1HEgky-e"; // Diarahkan ke Google Drive
+                    startCountdown(data.expiryDate);
+
+                    loginSection.style.opacity = '0';
+                    loginSection.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        loginSection.classList.add('hidden');
+                        loginSection.classList.remove('flex');
+                        appSection.classList.remove('hidden');
+                    }, 500);
                 }
+            } catch (err) {
+                showLoginError("Gagal terhubung ke database server.");
+            } finally {
                 resetLoginBtn(originalBtnText);
-            })
-            .catch(err => {
-                showLoginError("Gagal terhubung ke server (Cek URL Web App).");
-                resetLoginBtn(originalBtnText);
-            });
+            }
         });
 
         function showLoginError(msg) {
@@ -873,27 +1047,44 @@
             if (countdownInterval) clearInterval(countdownInterval);
             document.getElementById('usernameInput').value = "";
             document.getElementById('passwordInput').value = "";
-            tableBody.innerHTML = '';
+            
+            appSection.classList.add('hidden');
+            
+            loginSection.classList.remove('hidden');
+            loginSection.classList.add('flex');
+            setTimeout(() => {
+                loginSection.style.opacity = '1';
+                loginSection.style.transform = 'scale(1)';
+            }, 50);
+            
+            document.getElementById('tableBody').innerHTML = '';
             showEmptyState(false);
             updateExportUI(false);
             document.getElementById('templateSection').classList.add('hidden');
             document.getElementById('tableSection').classList.add('hidden');
-            navigate('landing'); // Kembali ke Landing Page saat logout
         }
 
-        // --- DASHBOARD EXCEL & TEMPLATE LOGIC ---
         const saveTemplateBtn = document.getElementById('saveTemplateBtn');
         const saveOverlay = document.getElementById('saveOverlay');
 
-        saveTemplateBtn.addEventListener('click', function() {
+        // FUNGSI SIMPAN TEMPLATE MENGGUNAKAN SUPABASE
+        saveTemplateBtn.addEventListener('click', async function() {
             const currentTemplate = messageTemplate.value;
             saveOverlay.classList.remove('hidden');
             saveOverlay.classList.add('flex');
 
-            // Dummy Save untuk Preview
-            setTimeout(() => {
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ templatePesan: currentTemplate }) // Disesuaikan ke kolom templatePesan
+                    .eq('username', currentLoggedUser);
+
+                if (error) throw error;
+
+                // Jika berhasil
                 saveOverlay.classList.add('hidden');
                 saveOverlay.classList.remove('flex');
+                
                 const originalHtml = saveTemplateBtn.innerHTML;
                 saveTemplateBtn.innerHTML = '<i class="ph ph-check text-lg"></i> Tersimpan';
                 saveTemplateBtn.classList.add('bg-green-600');
@@ -901,7 +1092,12 @@
                     saveTemplateBtn.innerHTML = originalHtml;
                     saveTemplateBtn.classList.remove('bg-green-600');
                 }, 2000);
-            }, 800);
+
+            } catch (err) {
+                saveOverlay.classList.add('hidden');
+                saveOverlay.classList.remove('flex');
+                alert("Gagal menyimpan ke server: " + err.message);
+            }
         });
 
         const fileInput = document.getElementById('fileInput');
@@ -929,9 +1125,13 @@
             tempTextArea.select();
             document.execCommand("copy");
             document.body.removeChild(tempTextArea);
+
             const originalHtml = this.innerHTML;
             this.innerHTML = '<i class="ph ph-check text-lg text-green-600"></i> Disalin';
-            setTimeout(() => this.innerHTML = originalHtml, 2000);
+            
+            setTimeout(() => {
+                this.innerHTML = originalHtml;
+            }, 2000);
         });
 
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -940,18 +1140,21 @@
         function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
 
         ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => dropZone.classList.add('dropzone-active'), false);
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('dropzone-active');
+            }, false);
         });
         ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dropzone-active'), false);
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('dropzone-active');
+            }, false);
         });
-        
         dropZone.addEventListener('drop', (e) => {
             const dt = e.dataTransfer;
             if (dt.files.length) { fileInput.files = dt.files; handleFile(dt.files[0]); }
         });
         fileInput.addEventListener('change', function(e) {
-            if (e.target.files.length) handleFile(e.target.files[0]);
+            if (e.target.files.length) { handleFile(e.target.files[0]); }
         });
 
         function handleFile(file) {
@@ -999,6 +1202,7 @@
                 else if (!cleanWaNumber.startsWith('62') && cleanWaNumber.length > 5) cleanWaNumber = '62' + cleanWaNumber;
 
                 const isWaValid = cleanWaNumber.length >= 9;
+
                 const rowData = { Nama: rawNama, Panggilan: panggilanFinal, CleanWa: cleanWaNumber, Alamat: rawAlamat, IsValid: isWaValid };
                 processedDataGlobal.push(rowData);
 
@@ -1022,6 +1226,7 @@
             }
 
             const validDataCount = processedDataGlobal.filter(row => row.IsValid).length;
+
             if (validDataCount > 0) {
                 emptyState.classList.add('hidden');
                 emptyState.classList.remove('flex');
@@ -1040,20 +1245,24 @@
                 exportCard.className = "dark-shadow-card relative flex flex-col items-center justify-center p-10 transition-all duration-300 min-h-[260px] bg-white border border-gray-200";
                 exportIconWrapper.className = "w-16 h-16 rounded-2xl bg-gray-900 flex items-center justify-center mb-4 shadow-lg";
                 exportIcon.className = "ph ph-check-circle text-4xl text-white";
+                
                 exportTitle.textContent = "Data Siap Diekspor";
                 exportTitle.className = "text-lg font-bold text-gray-900 mb-2";
                 exportDesc.textContent = "Data siap diunduh ke dalam format Excel.";
                 exportDesc.className = "text-sm text-gray-500 text-center px-4 mb-6 font-medium";
+
                 exportExcelBtn.disabled = false;
                 exportExcelBtn.className = "w-full max-w-sm px-4 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 green-shadow-btn text-sm";
             } else {
                 exportCard.className = "dark-shadow-card relative flex flex-col items-center justify-center p-10 transition-all duration-300 min-h-[260px] bg-gray-50 border-2 border-transparent";
                 exportIconWrapper.className = "w-16 h-16 rounded-2xl bg-gray-200 flex items-center justify-center mb-4 border border-gray-300";
                 exportIcon.className = "ph ph-clock-countdown text-4xl text-gray-400";
+                
                 exportTitle.textContent = "Menunggu Pemrosesan";
                 exportTitle.className = "text-lg font-bold text-gray-500 mb-2";
                 exportDesc.textContent = "Unggah data Excel terlebih dahulu untuk ekspor.";
                 exportDesc.className = "text-sm text-gray-400 text-center px-4 mb-6 font-medium";
+
                 exportExcelBtn.disabled = true;
                 exportExcelBtn.className = "w-full max-w-sm px-4 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 bg-gray-300 text-gray-500 cursor-not-allowed text-sm";
             }
@@ -1072,20 +1281,24 @@
 
         exportExcelBtn.addEventListener('click', function() {
             if (processedDataGlobal.length === 0) return;
+
             const excelRows = [['NO WhatsApp', 'Nama', 'Panggilan', 'Alamat']];
             processedDataGlobal.forEach((row) => {
                 if (!row.IsValid) return; 
                 excelRows.push([row.CleanWa, row.Nama, row.Panggilan, row.Alamat]);
             });
+
             const worksheet = XLSX.utils.aoa_to_sheet(excelRows);
             const range = XLSX.utils.decode_range(worksheet['!ref']);
             for (let R = range.s.r + 1; R <= range.e.r; ++R) {
                 const waCellAddress = XLSX.utils.encode_cell({ r: R, c: 0 }); 
                 if (worksheet[waCellAddress]) worksheet[waCellAddress].t = 's';
             }
+
             worksheet['!cols'] = [{ wch: 18 }, { wch: 25 }, { wch: 12 }, { wch: 35 }];
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Data Kontak WA');
+            
             XLSX.writeFile(workbook, 'File Hicare.xlsx');
         });
     </script>
